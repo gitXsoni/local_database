@@ -19,9 +19,22 @@ class PersonViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // refreshPersonData() async {
-  //   _personList = await personDataRepo.fetchAllPersons();
+  void searchPerson(String search) {
+    _personList = _personList
+        .where(
+          (person) => person.name
+              .toString()
+              .toLowerCase()
+              .contains(search.toLowerCase()),
+        )
+        .toList();
 
-  //   notifyListeners();
-  // }
+    notifyListeners();
+
+    // refreshPersonData() async {
+    //   _personList = await personDataRepo.fetchAllPersons();
+
+    //   notifyListeners();
+    // }
+  }
 }

@@ -1,3 +1,4 @@
+import 'package:database_class/locator.dart';
 import 'package:database_class/screens/person_screen.dart';
 import 'package:database_class/view_models/person_view_model.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
 
 void main() {
+  setup();
   runApp(const MyApp());
 }
 

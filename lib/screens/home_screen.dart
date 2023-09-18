@@ -22,7 +22,7 @@ class _PersonDataState extends State<HomeScreen> {
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => PersonScreen()));
+                  context, MaterialPageRoute(builder: (_) => PersonForm()));
             },
             child: Icon(Icons.add),
           ),
@@ -30,22 +30,34 @@ class _PersonDataState extends State<HomeScreen> {
             builder: (_, personViewModel, __) {
               // personViewModel.fetchAllPerson();
 
-              if (personViewModel.personList.isEmpty) {
-                return const Center(
-                  child: Text(
-                      " there are no person added. please add by clicking on +"),
-                );
-              } else {
-                return ListView.builder(
-                    itemCount: personViewModel.personList.length,
-                    itemBuilder: (context, index) => Personcard(
-                          phoneNumber:
-                              personViewModel.personList[index].phoneNumber,
-                          personName: personViewModel.personList[index].name,
-                          personAddress:
-                              personViewModel.personList[index].address,
-                        ));
-              }
+              return Column(
+                children: [
+                  Expanded(
+                      flex: 2,
+                      child: TextField(
+                        onChanged: (value) {
+                          if (value != '') {
+                            personViewModel.searchPerson(value);
+                          } else {
+                            personViewModel.fetchAllPerson();
+                          }
+                        },
+                      )),
+                  Expanded(
+                    flex: 8,
+                    child: ListView.builder(
+                        itemCount: personViewModel.personList.length,
+                        itemBuilder: (context, index) => Personcard(
+                              personData: personViewModel.personList[index],
+                              // phoneNumber:
+                              //     personViewModel.personList[index].phoneNumber,
+                              // personName: personViewModel.personList[index].name,
+                              // personAddress:
+                              //     personViewModel.personList[index].address,
+                            )),
+                  ),
+                ],
+              );
             },
           )
           // body: Column(

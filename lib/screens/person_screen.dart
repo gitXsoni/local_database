@@ -1,24 +1,38 @@
 import 'package:database_class/models/app_db.dart';
 import 'package:database_class/repository/demo_repository.dart';
-import 'package:database_class/screens/home_screen.dart';
+// import 'package:database_class/screens/home_screen.dart';
 import 'package:database_class/view_models/person_view_model.dart';
 import 'package:database_class/widgets/custom_text_field.dart';
 import 'package:drift/drift.dart' as d;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PersonScreen extends StatefulWidget {
-  const PersonScreen({super.key});
+class PersonForm extends StatefulWidget {
+  final PersonData? personData;
+  const PersonForm({super.key, this.personData});
 
   @override
-  State<PersonScreen> createState() => _PersonScreenState();
+  State<PersonForm> createState() => _PersonScreenState();
 }
 
-class _PersonScreenState extends State<PersonScreen> {
+class _PersonScreenState extends State<PersonForm> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _collegeController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    if (widget.personData != null) {
+      _nameController.text = widget.personData!.name;
+      _addressController.text = widget.personData!.address!;
+      _phoneController.text = widget.personData!.phoneNumber!.toString();
+      _collegeController.text = widget.personData!.college;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +128,7 @@ class _PersonScreenState extends State<PersonScreen> {
                         ],
                       ),
                       ElevatedButton(
-                          onPressed: () async{
+                          onPressed: () async {
                             PersonCompanion person = PersonCompanion(
                                 name: d.Value(_nameController.text),
                                 address: d.Value(_addressController.text),
@@ -123,21 +137,23 @@ class _PersonScreenState extends State<PersonScreen> {
                                 college: d.Value(_collegeController.text),
                                 isPassed: d.Value(true));
 
-                           await PersonDataRepo().addPerson(person);
-
-                           await Provider.of<PersonViewModel>(context, listen: false)
+                             widget.personData == null
+                                ? await PersonDataRepo().addPerson(person)
+                                : await PersonDataRepo().updatePerson(person);
+                            await Provider.of<PersonViewModel>(context,
+                                    listen: false)
                                 .fetchAllPerson();
                             Navigator.pop(
                               context,
                             );
 
-                            
                             // Navigator.push(
                             //     context,
                             //     MaterialPageRoute(
                             //         builder: (context) => PersonData()));
                           },
-                          child: Text("Save"))
+                          child: Text(
+                              widget.personData == null ? "Save" : "Update"))
                     ],
                   ),
                 ),

@@ -1,7 +1,9 @@
 import 'package:database_class/models/app_db.dart';
 
+import '../locator.dart';
+
 class PersonDataRepo {
-  MyDb db = MyDb();
+  MyDb db = getIt.get<MyDb>();
 
   fetchAllPersons() async {
     try {
@@ -28,11 +30,14 @@ class PersonDataRepo {
   }
 
   updatePerson(PersonCompanion person) async {
-    await db
-        .update(db.person)
-        .replace(person)
-        .then((value) => print('Successfully updated'))
-        .onError((error, stackTrace) => print('Unable to update person data'));
+    try {
+      print("try blobk of update executed, ${db}, ${db.person}");
+      await db.update(db.person).replace(person);
+      print("execution completed");
+
+    } catch (e, s) {
+      print("Unable to update because of $e and stack trace is $s");
+    }
   }
 
   deletePerson(int id) async {
